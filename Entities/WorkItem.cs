@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyBoards.Entities
 {
@@ -6,19 +9,24 @@ namespace MyBoards.Entities
     {
         public int Id { get; set; }
         public string State { get; set; }
+
         public string Area { get; set; }
         public string InterationPath { get; set; }
+
         public int Priority { get; set; }
 
         // Epic
         public DateTime? StartDate { get; set; }
 
+        [Precision(3)]
         public DateTime? EndDate { get; set; }
 
         //Issue
         public decimal Efford { get; set; }
 
+        //Task
         public string Activity { get; set; }
+
         public decimal RemaningWork { get; set; }
 
         public string Type { get; set; }
