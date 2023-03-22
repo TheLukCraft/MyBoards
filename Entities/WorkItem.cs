@@ -18,7 +18,6 @@ namespace MyBoards.Entities
         // Epic
         public DateTime? StartDate { get; set; }
 
-        [Precision(3)]
         public DateTime? EndDate { get; set; }
 
         //Issue
@@ -30,5 +29,9 @@ namespace MyBoards.Entities
         public decimal RemaningWork { get; set; }
 
         public string Type { get; set; }
+
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public User Author { get; set; }
+        public Guid AuthorId { get; set; }
     }
 }
