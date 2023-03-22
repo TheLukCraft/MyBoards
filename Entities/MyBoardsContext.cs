@@ -38,6 +38,13 @@ namespace MyBoards.Entities
                 eb.Property(x => x.CreatedDate).HasDefaultValueSql("getutcdate()");
                 eb.Property(x => x.UpdatedDate).ValueGeneratedOnUpdate();
             });
+
+            modelBuilder.Entity<User>(eb =>
+            {
+                eb.HasOne(u => u.Address)
+                .WithOne(u => u.User)
+                .HasForeignKey<Address>(a => a.UserId)
+            });
         }
     }
 }
