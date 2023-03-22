@@ -18,5 +18,9 @@ namespace MyBoards.Entities
         {
             optionsBuilder.UseSqlServer();
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+        }
     }
 }
