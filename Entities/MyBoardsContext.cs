@@ -9,10 +9,11 @@ namespace MyBoards.Entities
         }
 
         public DbSet<WorkItem> WorkItems { get; set; }
-        public DbSet<User> users { get; set; }
-        public DbSet<Tag> tags { get; set; }
-        public DbSet<Comment> comments { get; set; }
-        public DbSet<Address> addresses { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<WorkItemState> WorkItemStates { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -21,8 +22,17 @@ namespace MyBoards.Entities
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<WorkItemState>()
+                .Property(s => s.Value)
+                .IsRequired()
+                .HasMaxLength(50);
+
             modelBuilder.Entity<WorkItem>(eb =>
             {
+                eb.HasOne(w => w.State)
+                .WithMany()
+                .HasForeignKey(w => w.StateId);
+
                 eb.Property(wi => wi.State).IsRequired();
                 eb.Property(wi => wi.Area).HasColumnType("varchar(200)");
                 eb.Property(wi => wi.InterationPath).HasColumnName("Iteration_Path");
@@ -38,6 +48,23 @@ namespace MyBoards.Entities
                 eb.HasOne(w => w.Author)
                 .WithMany(u => u.WorkItems)
                 .HasForeignKey(w => w.AuthorId);
+
+                eb.HasMany(w => w.Tags)
+                .WithMany(t => t.WorkItems)
+                .UsingEntity<WorkItemTag>(
+                    w => w.HasOne(wit => wit.Tag)
+                    .WithMany()
+                    .HasForeignKey(wit => wit.TagId),
+
+                     w => w.HasOne(wit => wit.WorkItem)
+                    .WithMany()
+                    .HasForeignKey(wit => wit.WorkItemId),
+
+                     wit =>
+                     {
+                         wit.HasKey(x => new { x.TagId, x.WorkItemId });
+                         wit.Property(x => x.PublicationDate).HasDefaultValueSql("getutcdate()");
+                     });
             });
 
             modelBuilder.Entity<Comment>(eb =>
