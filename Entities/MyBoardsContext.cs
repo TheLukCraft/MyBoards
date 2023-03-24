@@ -18,11 +18,6 @@ namespace MyBoards.Entities
         public DbSet<Address> Addresses { get; set; }
         public DbSet<WorkItemState> WorkItemStates { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer();
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<WorkItemState>()
@@ -52,7 +47,6 @@ namespace MyBoards.Entities
                 .WithMany()
                 .HasForeignKey(w => w.StateId);
 
-                eb.Property(wi => wi.State).IsRequired();
                 eb.Property(wi => wi.Area).HasColumnType("varchar(200)");
                 eb.Property(wi => wi.InterationPath).HasColumnName("Iteration_Path");
                 eb.Property(wi => wi.Priority).HasDefaultValue(1);
