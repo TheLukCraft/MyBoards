@@ -12,7 +12,7 @@ using MyBoards.Entities;
 namespace MyBoards.Migrations
 {
     [DbContext(typeof(MyBoardsContext))]
-    [Migration("20230323150338_Init")]
+    [Migration("20230327131401_Init")]
     partial class Init
     {
         /// <inheritdoc />
