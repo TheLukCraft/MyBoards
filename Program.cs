@@ -79,6 +79,21 @@ app.MapGet("data", async (MyBoardsContext db) =>
     //.Select(g => new { stateId = g.Key, count = g.Count() })
     //.ToListAsync();
 
-    return new { statesCount };
+    //var selectedEpics = await db.Epics
+    //.Where(w => w.StateId == 4)
+    //.OrderBy(w => w.Priority)
+    //.ToListAsync();
+
+    var authorsCommentCounts = await db.Comments
+    .GroupBy(c => c.AuthorId)
+    .Select(g => new { g.Key, Count = g.Count() })
+    .ToListAsync();
+
+    var topAuthor = authorsCommentCounts
+    .First(a => a.Count == authorsCommentCounts.Max(acc => acc.Count));
+
+    var userDetails = db.Users.First(u => u.Id == topAuthor.Key);
+
+    return new { userDetails, commentCount = topAuthor.Count };
 });
 app.Run();
