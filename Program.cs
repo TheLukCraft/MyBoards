@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using MyBoards.Entities;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 builder.Services.AddDbContext<MyBoardsContext>(
     option => option.UseSqlServer(builder.Configuration.GetConnectionString("MyBoardsConnectionString"))
@@ -84,17 +90,29 @@ app.MapGet("data", async (MyBoardsContext db) =>
     //.OrderBy(w => w.Priority)
     //.ToListAsync();
 
-    var authorsCommentCounts = await db.Comments
-    .GroupBy(c => c.AuthorId)
-    .Select(g => new { g.Key, Count = g.Count() })
-    .ToListAsync();
+    //var authorsCommentCounts = await db.Comments
+    //.GroupBy(c => c.AuthorId)
+    //.Select(g => new { g.Key, Count = g.Count() })
+    //.ToListAsync();
 
-    var topAuthor = authorsCommentCounts
-    .First(a => a.Count == authorsCommentCounts.Max(acc => acc.Count));
+    //var topAuthor = authorsCommentCounts
+    //.First(a => a.Count == authorsCommentCounts.Max(acc => acc.Count));
 
-    var userDetails = db.Users.First(u => u.Id == topAuthor.Key);
+    //var userDetails = db.Users.First(u => u.Id == topAuthor.Key);
 
-    return new { userDetails, commentCount = topAuthor.Count };
+    //return new { userDetails, commentCount = topAuthor.Count };
+
+    //var user = await db.Users.FirstAsync(u => u.Id == Guid.Parse("68366DBE-0809-490F-CC1D-08DA10AB0E61"));
+    //var userComments = await db.Comments.Where(c => c.AuthorId == user.Id).ToListAsync();
+
+    //return user;
+
+    var user = await db.Users
+    .Include(u => u.Comments).ThenInclude(c => c.WorkItem)
+    .Include(u => u.Address)
+    .FirstAsync(u => u.Id == Guid.Parse("68366DBE-0809-490F-CC1D-08DA10AB0E61"));
+
+    return user;
 });
 
 app.MapPost("update", async (MyBoardsContext db) =>
