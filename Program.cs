@@ -96,4 +96,31 @@ app.MapGet("data", async (MyBoardsContext db) =>
 
     return new { userDetails, commentCount = topAuthor.Count };
 });
+
+app.MapPost("update", async (MyBoardsContext db) =>
+{
+    //var epic = await db.Epics.FirstAsync(epic => epic.Id == 1);
+
+    //epic.Area = "Updated Area";
+    //epic.Priority = 1;
+    //epic.StartDate = DateTime.Now;
+
+    //await db.SaveChangesAsync();
+    //return epic;
+
+    //var epic = await db.Epics.FirstAsync(epic => epic.Id == 1);
+    //var onHoldState = await db.WorkItemStates.FirstAsync(a => a.Value == "On Hold");
+
+    //epic.StateId = onHoldState.Id;
+
+    //await db.SaveChangesAsync();
+    //return epic;
+
+    var epic = await db.Epics.FirstAsync(epic => epic.Id == 1);
+    var rejectedState = await db.WorkItemStates.FirstAsync(a => a.Value == "Rejected");
+
+    epic.State = rejectedState;
+    await db.SaveChangesAsync();
+    return epic;
+});
 app.Run();
