@@ -123,4 +123,48 @@ app.MapPost("update", async (MyBoardsContext db) =>
     await db.SaveChangesAsync();
     return epic;
 });
+
+app.MapPost("create", async (MyBoardsContext db) =>
+    {
+        //Tag tag = new Tag()
+        //{
+        //    Value = "EF"
+        //};
+        ////await db.AddAsync(tag);
+        //await db.Tags.AddAsync(tag);
+        //await db.SaveChangesAsync();
+        //return tag;
+
+        //Tag tag = new Tag()
+        //{
+        //    Value = "EF"
+        //};
+        //Tag tagAsp = new Tag()
+        //{
+        //    Value = "ASP"
+        //};
+        //var tags = new List<Tag>() { tag, tagAsp };
+        //await db.Tags.AddRangeAsync(tags);
+        //await db.SaveChangesAsync();
+
+        //return tags;
+
+        var address = new Address()
+        {
+            Id = Guid.NewGuid(),
+            City = "Kraków",
+            Country = "Poland",
+            Street = "D³uga"
+        };
+        var user = new User()
+        {
+            Email = "luk1997r@o2.pl",
+            Fullname = "Test User",
+            Address = address,
+        };
+        await db.AddAsync(user);
+        await db.SaveChangesAsync();
+
+        return user;
+    });
 app.Run();
